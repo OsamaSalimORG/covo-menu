@@ -9,10 +9,13 @@ export function Sparticles({ count = 60 }: { count?: number }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const mobile = window.innerWidth < 768;
+    const actualCount = mobile ? Math.min(count, 20) : count;
+
     let width = 0;
     let height = 0;
     let raf = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
 
     type P = { x: number; y: number; r: number; vy: number; vx: number; a: number; phase: number; gold: boolean };
     let particles: P[] = [];
@@ -38,7 +41,7 @@ export function Sparticles({ count = 60 }: { count?: number }) {
 
     const init = () => {
       resize();
-      particles = Array.from({ length: count }, () => {
+      particles = Array.from({ length: actualCount }, () => {
         const p = spawn();
         p.y = Math.random() * height;
         return p;
@@ -56,21 +59,31 @@ export function Sparticles({ count = 60 }: { count?: number }) {
           Object.assign(p, spawn());
         }
 
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
-        const color = p.gold
-          ? `hsla(40, 70%, 60%, ${p.a})`
-          : `hsla(45, 40%, 85%, ${p.a * 0.6})`;
-        glow.addColorStop(0, color);
-        glow.addColorStop(1, "hsla(45, 40%, 85%, 0)");
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
-        ctx.fill();
+        if (mobile) {
+          // Simplified: just dots, no radial gradient
+          ctx.fillStyle = p.gold
+            ? `hsla(40, 70%, 60%, ${p.a})`
+            : `hsla(45, 40%, 85%, ${p.a * 0.6})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+          const color = p.gold
+            ? `hsla(40, 70%, 60%, ${p.a})`
+            : `hsla(45, 40%, 85%, ${p.a * 0.6})`;
+          glow.addColorStop(0, color);
+          glow.addColorStop(1, "hsla(45, 40%, 85%, 0)");
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+          ctx.fill();
 
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
       raf = requestAnimationFrame(tick);
       void t;

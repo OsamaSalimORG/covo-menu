@@ -55,14 +55,20 @@ export default function App() {
 
   const frames = useFrameSequence();
 
-  // Smooth scroll via lenis
+  // Smooth scroll via lenis — lighter on mobile
   useEffect(() => {
     let raf = 0;
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
     let cancelled = false;
+    const mobile = window.innerWidth < 768;
     import("lenis").then(({ default: Lenis }) => {
       if (cancelled) return;
-      lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, smoothWheel: true });
+      lenis = new Lenis({
+        lerp: mobile ? 0.15 : 0.09,
+        wheelMultiplier: mobile ? 0.8 : 1,
+        smoothWheel: true,
+        touchMultiplier: 1.5,
+      });
       const loop = (t: number) => {
         lenis?.raf(t);
         raf = requestAnimationFrame(loop);
@@ -154,6 +160,7 @@ export default function App() {
 
   const canvasScale = 1 + progress * 0.14;
   const canvasBlur = progress > 0.92 ? (progress - 0.92) * 40 : 0;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   const handleRetry = () => {
     window.location.reload();
@@ -199,14 +206,14 @@ export default function App() {
         id="top"
         ref={cinemaRef}
         className="relative"
-        style={{ height: "500vh" }}
+        style={{ height: isMobile ? "300vh" : "500vh" }}
       >
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
           <div
             className="absolute inset-0 will-change-transform"
             style={{
               transform: `scale(${canvasScale})`,
-              filter: `blur(${canvasBlur}px)`,
+              filter: isMobile ? "none" : `blur(${canvasBlur}px)`,
               transition: "filter 200ms linear",
             }}
           >

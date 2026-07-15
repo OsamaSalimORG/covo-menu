@@ -34,14 +34,26 @@ function parseSheetRow(row: SheetRow, index: number): MenuItem {
   };
 }
 
+const CACHE_KEY = "covo_menu_data";
 let cachedData: { data: MenuItem[]; timestamp: number } | null = null;
 
-export async function fetchMenuData(): Promise<MenuItem[]> {
-  const now = Date.now();
-  if (cachedData && now - cachedData.timestamp < config.cache.menuDataTTL) {
-    return cachedData.data;
+function readLocalCache(): MenuItem[] | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
   }
+}
 
+function writeLocalCache(data: MenuItem[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch { /* quota exceeded, ignore */ }
+}
+
+async function fetchFromSheets(): Promise<MenuItem[]> {
   const { spreadsheetId, apiKey, sheetName } = config.googleSheets;
   const range = `${sheetName}!A:Z`;
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
@@ -54,9 +66,7 @@ export async function fetchMenuData(): Promise<MenuItem[]> {
   const json = await response.json();
   const values: string[][] = json.values || [];
 
-  if (values.length < 2) {
-    return [];
-  }
+  if (values.length < 2) return [];
 
   const headers = values[0];
   const rows = values.slice(1);
@@ -69,10 +79,38 @@ export async function fetchMenuData(): Promise<MenuItem[]> {
     return parseSheetRow(rowObj, i);
   });
 
-  const sorted = items.sort((a, b) => a.sortOrder - b.sortOrder);
+  return items.sort((a, b) => a.sortOrder - b.sortOrder);
+}
 
-  cachedData = { data: sorted, timestamp: now };
-  return sorted;
+/**
+ * Stale-while-revalidate: returns cached data instantly,
+ * fetches fresh data in background and updates.
+ */
+export async function fetchMenuData(): Promise<MenuItem[]> {
+  const now = Date.now();
+
+  // 1. In-memory cache (instant)
+  if (cachedData && now - cachedData.timestamp < config.cache.menuDataTTL) {
+    return cachedData.data;
+  }
+
+  // 2. localStorage cache (instant, persists across reloads)
+  const local = readLocalCache();
+  if (local && local.length > 0) {
+    cachedData = { data: local, timestamp: now };
+    // Revalidate in background (don't block UI)
+    fetchFromSheets().then((fresh) => {
+      cachedData = { data: fresh, timestamp: Date.now() };
+      writeLocalCache(fresh);
+    }).catch(() => { /* keep using cached */ });
+    return local;
+  }
+
+  // 3. First visit — fetch and wait
+  const data = await fetchFromSheets();
+  cachedData = { data, timestamp: now };
+  writeLocalCache(data);
+  return data;
 }
 
 export interface CategoryItem {
