@@ -87,7 +87,10 @@ export function FrameCanvas({ progressRef, className }: { progressRef: React.Ref
             }
             const iw = img.naturalWidth;
             const ih = img.naturalHeight;
-            const scale = Math.max((w * dpr) / iw, (h * dpr) / ih);
+            const mobile = mobileRef.current;
+            const scale = mobile
+              ? Math.min((w * dpr) / iw, (h * dpr) / ih)
+              : Math.max((w * dpr) / iw, (h * dpr) / ih);
             const dw = iw * scale;
             const dh = ih * scale;
             const dx = (w * dpr - dw) / 2;
