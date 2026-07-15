@@ -325,7 +325,7 @@ export default function App() {
               COVO
             </span>
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.28em] text-foreground/70">
+          <nav className="flex items-center gap-4 md:gap-8 text-[10px] md:text-[11px] tracking-[0.28em] text-foreground/70">
             {NAV.map((l) => (
               <a key={l.en} href={l.href} className="hover:text-foreground transition">
                 {isAr ? l.ar : l.en.toUpperCase()}
