@@ -164,21 +164,26 @@ export default function App() {
     chapters.forEach((ref, i) => {
       if (!ref.current) return;
       const [start, end] = ranges[i];
-      gsap.fromTo(
-        ref.current,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: "power1.out",
-          scrollTrigger: {
-            trigger: cinema,
-            start: `top+=${start * 100}% top`,
-            end: `top+=${end * 100}% top`,
-            scrub: 0.2,
-          },
-        }
-      );
+      if (i === 0) {
+        // Hero text: visible immediately, only fade out on scroll
+        gsap.set(ref.current, { opacity: 1, y: 0 });
+      } else {
+        gsap.fromTo(
+          ref.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: "power1.out",
+            scrollTrigger: {
+              trigger: cinema,
+              start: `top+=${start * 100}% top`,
+              end: `top+=${end * 100}% top`,
+              scrub: 0.2,
+            },
+          }
+        );
+      }
       // Fade out
       gsap.to(ref.current, {
         opacity: 0,
