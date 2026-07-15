@@ -60,20 +60,19 @@ export function Sparticles({ count = 60 }: { count?: number }) {
         }
 
         if (mobile) {
-          // Simplified: just dots, no radial gradient
           ctx.fillStyle = p.gold
-            ? `hsla(40, 70%, 60%, ${p.a})`
-            : `hsla(45, 40%, 85%, ${p.a * 0.6})`;
+            ? `hsla(38, 65%, 55%, ${p.a})`
+            : `hsla(40, 30%, 75%, ${p.a * 0.7})`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fill();
         } else {
           const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
           const color = p.gold
-            ? `hsla(40, 70%, 60%, ${p.a})`
-            : `hsla(45, 40%, 85%, ${p.a * 0.6})`;
+            ? `hsla(38, 65%, 55%, ${p.a})`
+            : `hsla(40, 30%, 75%, ${p.a * 0.7})`;
           glow.addColorStop(0, color);
-          glow.addColorStop(1, "hsla(45, 40%, 85%, 0)");
+          glow.addColorStop(1, p.gold ? "hsla(38, 65%, 55%, 0)" : "hsla(40, 30%, 75%, 0)");
           ctx.fillStyle = glow;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
