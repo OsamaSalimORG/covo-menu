@@ -359,7 +359,7 @@ export default function App() {
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
           <div
             ref={canvasScaleRef}
-            className="absolute inset-0 will-change-transform"
+            className="absolute inset-0 will-change-transform pointer-events-none"
             style={{ transformOrigin: "center center" }}
           >
             <FrameCanvas progressRef={progressRef} className="w-full h-full block" />
@@ -376,7 +376,7 @@ export default function App() {
           {/* Chapter 1 */}
           <div
             ref={chapter1Ref}
-            className="absolute inset-0 flex flex-col items-center justify-center pt-24 md:pt-0 text-center px-6 will-change-[opacity,transform]"
+            className="absolute inset-0 flex flex-col items-center justify-center pt-24 md:pt-0 text-center px-6 will-change-[opacity,transform] pointer-events-auto"
           >
             <p className="text-[11px] tracking-[0.5em] text-gold/80 mb-6" style={{ textShadow: "0 0 12px rgba(212,168,67,0.7), 0 0 30px rgba(212,168,67,0.4)" }}>{t.tagline}</p>
             <h1
