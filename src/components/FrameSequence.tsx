@@ -95,7 +95,11 @@ export function FrameCanvas({ progress, className }: FrameCanvasProps) {
       lastDrawnRef.current = -1;
     };
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
   }, []);
 
   return <canvas ref={canvasRef} className={className} />;

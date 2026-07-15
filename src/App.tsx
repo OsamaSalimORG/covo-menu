@@ -201,7 +201,7 @@ export default function App() {
         className="relative"
         style={{ height: "500vh" }}
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
           <div
             className="absolute inset-0 will-change-transform"
             style={{
