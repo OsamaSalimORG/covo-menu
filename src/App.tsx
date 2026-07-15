@@ -370,9 +370,9 @@ export default function App() {
           {/* Chapter 1 */}
           <div
             ref={chapter1Ref}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 will-change-[opacity,transform]"
+            className="absolute inset-0 flex flex-col items-center justify-center pt-24 md:pt-0 text-center px-6 will-change-[opacity,transform]"
           >
-            <p className="text-[11px] tracking-[0.5em] text-gold/80 mb-6">{t.tagline}</p>
+            <p className="text-[11px] tracking-[0.5em] text-gold/80 mb-6" style={{ textShadow: "0 0 12px rgba(212,168,67,0.7), 0 0 30px rgba(212,168,67,0.4)" }}>{t.tagline}</p>
             <h1
               className={`text-6xl md:text-[9rem] leading-[0.9] text-gold-glow ${isAr ? "font-arabic" : ""}`}
               style={{ fontFamily: isAr ? undefined : "var(--font-display)", fontWeight: 400, letterSpacing: "0.02em" }}
@@ -394,7 +394,7 @@ export default function App() {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-gold mt-2 bounce-arrow drop-shadow-[0_0_12px_rgba(212,168,67,0.8)]"
+                className="text-gold mt-2 bounce-arrow drop-shadow-[0_0_16px_rgba(212,168,67,1)] drop-shadow-[0_0_40px_rgba(212,168,67,0.6)]"
               >
                 <path d="M12 5v14" />
                 <path d="m19 12-7 7-7-7" />
