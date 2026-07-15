@@ -61,6 +61,7 @@ export default function App() {
     hero1: isAr ? "ادخل" : "STEP",
     hero2: isAr ? "إلى الداخل" : "INSIDE",
     scrollHint: isAr ? "مرّر للدخول" : "SCROLL TO ENTER",
+    goToMenu: isAr ? "عرض القائمة" : "Go to Menu",
     chapter1Title: isAr ? "الواجهة" : "THE FAÇADE",
     chapter1Body: isAr
       ? "حجر منحوت. ضوء دافئ. مساء يبدأ بلمسة كاميرا."
@@ -399,6 +400,13 @@ export default function App() {
                 <path d="M12 5v14" />
                 <path d="m19 12-7 7-7-7" />
               </svg>
+              <button
+                onClick={() => menuSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
+                className="mt-4 px-6 py-2 rounded-full border border-gold/40 text-gold text-[11px] tracking-[0.25em] hover:bg-gold/10 hover:border-gold/70 transition pointer-events-auto"
+                style={{ textShadow: "0 0 12px rgba(212,168,67,0.6), 0 0 30px rgba(212,168,67,0.3)" }}
+              >
+                {t.goToMenu}
+              </button>
             </div>
           </div>
 
