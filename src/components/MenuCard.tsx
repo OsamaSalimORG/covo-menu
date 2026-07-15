@@ -16,7 +16,7 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
   return (
     <article
       data-reveal
-      className="group relative glass rounded-3xl overflow-hidden flex flex-col md:flex-row hover:border-gold/40 transition-colors"
+      className="relative glass rounded-3xl overflow-hidden flex flex-col md:flex-row hover:border-gold/40 transition-colors"
     >
       <div className="relative md:w-44 h-56 md:h-auto shrink-0 overflow-hidden">
         {item.imageUrl ? (
@@ -24,15 +24,17 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
             src={item.imageUrl}
             alt={name}
             loading="lazy"
+            decoding="async"
             onError={(e) => handleImageError(e, item.imageFileId)}
-            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            className="w-full h-full object-cover"
           />
         ) : (
           <img
             src={getPlaceholderImage()}
             alt={name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50"
+            decoding="async"
+            className="w-full h-full object-cover opacity-50"
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/50 md:from-transparent md:via-transparent md:to-[oklch(0.14_0.012_60)]" />

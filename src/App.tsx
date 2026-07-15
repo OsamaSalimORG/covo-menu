@@ -193,15 +193,19 @@ export default function App() {
     if (!root) return;
     const targets = root.querySelectorAll<HTMLElement>("[data-reveal]");
     targets.forEach((el) => el.classList.add("reveal-init"));
+    let delay = 0;
     const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("reveal-in");
-            io.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.15, rootMargin: "0px 0px -80px 0px" },
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        visible.forEach((e) => {
+          (e.target as HTMLElement).style.transitionDelay = `${delay * 60}ms`;
+          delay++;
+          e.target.classList.add("reveal-in");
+          io.unobserve(e.target);
+        });
+        if (visible.length) delay = 0;
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -40px 0px" },
     );
     targets.forEach((el) => io.observe(el));
     return () => io.disconnect();
