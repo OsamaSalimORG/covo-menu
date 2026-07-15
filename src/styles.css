@@ -144,6 +144,7 @@
 .bounce-arrow { animation: bounceArrow 2s ease-in-out infinite; }
 @keyframes glowPulseStrong { 0%,100% { opacity: 0.8; text-shadow: 0 0 8px oklch(0.82 0.13 80 / 50%), 0 0 24px oklch(0.82 0.13 80 / 30%); } 50% { opacity: 1; text-shadow: 0 0 16px oklch(0.82 0.13 80 / 80%), 0 0 40px oklch(0.82 0.13 80 / 50%), 0 0 60px oklch(0.82 0.13 80 / 30%); } }
 .glow-pulse-strong { animation: glowPulseStrong 3s ease-in-out infinite; }
+@keyframes loadingBar { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
 
 .hairline { height: 1px; background: linear-gradient(90deg, transparent, oklch(0.82 0.13 80 / 40%), transparent); }
 .no-scrollbar::-webkit-scrollbar { display: none; }

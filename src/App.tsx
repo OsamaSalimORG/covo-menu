@@ -7,7 +7,43 @@ import { MenuCard } from "@/components/MenuCard";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Sparticles } from "@/components/Sparticles";
-import { fetchMenuData } from "@/services/google-sheets";
+
+function LoadingScreen({ ready }: { ready: boolean }) {
+  const [show, setShow] = useState(true);
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    if (ready) {
+      setFading(true);
+      const t = setTimeout(() => setShow(false), 800);
+      return () => clearTimeout(t);
+    }
+  }, [ready]);
+
+  if (!show) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-noir transition-opacity duration-700"
+      style={{ opacity: fading ? 0 : 1 }}
+    >
+      <span
+        className="text-4xl md:text-5xl tracking-[0.25em] text-gold-glow mb-6"
+        style={{ fontFamily: "var(--font-display)", fontStyle: "italic" }}
+      >
+        COVO
+      </span>
+      <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gold rounded-full"
+          style={{
+            animation: ready ? "none" : "loadingBar 1.8s ease-in-out infinite",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const NAV = [
   { en: "Menu", ar: "القائمة", href: "#menu" },
@@ -114,6 +150,15 @@ export default function App() {
   const { items, loading, error, categories } = useMenuData();
   const { search, setSearch, activeCategory, setActiveCategory, filtered } = useMenuFilter(items);
 
+  // Track first frame loaded for loading screen
+  const [framesReady, setFramesReady] = useState(false);
+  useEffect(() => {
+    const img = new Image();
+    img.src = `${import.meta.env.BASE_URL}frames/frame-001.jpg`;
+    img.onload = () => setFramesReady(true);
+  }, []);
+  const pageReady = framesReady && !loading;
+
   // Cart
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
@@ -172,6 +217,7 @@ export default function App() {
       dir={isAr ? "rtl" : "ltr"}
       lang={isAr ? "ar" : "en"}
     >
+      <LoadingScreen ready={pageReady} />
       {/* Fixed floating navbar */}
       <header className="fixed top-4 inset-x-0 z-50 px-4 md:px-8">
         <div className="max-w-6xl mx-auto glass rounded-full px-5 md:px-8 py-3 flex items-center justify-between">
