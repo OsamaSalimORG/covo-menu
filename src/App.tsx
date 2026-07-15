@@ -103,13 +103,16 @@ export default function App() {
   const progressTextRef = useRef<HTMLSpanElement>(null);
   const cinemaRef = useRef<HTMLDivElement>(null);
   const canvasScaleRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lenisRef = useRef<any>(null);
   const menuSectionRef = useRef<HTMLElement>(null);
   const menuGridRef = useRef<HTMLDivElement>(null);
 
   // Smooth scroll via lenis
   useEffect(() => {
     let raf = 0;
-    let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let lenis: any = null;
     let cancelled = false;
     const mobile = window.innerWidth < 768;
     import("lenis").then(({ default: Lenis }) => {
@@ -120,6 +123,7 @@ export default function App() {
         smoothWheel: true,
         touchMultiplier: 1.5,
       });
+      lenisRef.current = lenis;
       const loop = (t: number) => {
         lenis?.raf(t);
         raf = requestAnimationFrame(loop);
@@ -129,6 +133,7 @@ export default function App() {
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
+      lenisRef.current = null;
       lenis?.destroy();
     };
   }, []);
@@ -401,7 +406,12 @@ export default function App() {
                 <path d="m19 12-7 7-7-7" />
               </svg>
               <button
-                onClick={() => menuSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => {
+                  const el = menuSectionRef.current;
+                  if (el) {
+                    lenisRef.current?.scrollTo(el, { offset: 0 });
+                  }
+                }}
                 className="mt-4 px-6 py-2 rounded-full border border-gold/40 text-gold text-[11px] tracking-[0.25em] hover:bg-gold/10 hover:border-gold/70 transition pointer-events-auto"
                 style={{ textShadow: "0 0 12px rgba(212,168,67,0.6), 0 0 30px rgba(212,168,67,0.3)" }}
               >
