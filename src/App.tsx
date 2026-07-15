@@ -410,6 +410,9 @@ export default function App() {
                 onClick={() => {
                   const el = menuSectionRef.current;
                   if (el) {
+                    if (chapter1Ref.current) gsap.to(chapter1Ref.current, { opacity: 0, duration: 0.3 });
+                    if (chapter2Ref.current) gsap.to(chapter2Ref.current, { opacity: 0, duration: 0.3 });
+                    if (chapter3Ref.current) gsap.to(chapter3Ref.current, { opacity: 0, duration: 0.3 });
                     lenisRef.current?.scrollTo(el, {
                       offset: 0,
                       duration: 2.5,
