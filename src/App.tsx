@@ -410,7 +410,13 @@ export default function App() {
                 onClick={() => {
                   const el = menuSectionRef.current;
                   if (el) {
-                    lenisRef.current?.scrollTo(el, { offset: 0, duration: 2.5 });
+                    lenisRef.current?.scrollTo(el, {
+                      offset: 0,
+                      duration: 2.5,
+                      onComplete: () => {
+                        ScrollTrigger.refresh();
+                      },
+                    });
                   }
                 }}
                 className="mt-4 px-6 py-2 rounded-full border border-gold/40 text-gold text-[11px] tracking-[0.25em] hover:bg-gold/10 hover:border-gold/70 transition pointer-events-auto relative z-50"
