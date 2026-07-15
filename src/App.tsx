@@ -127,6 +127,7 @@ export default function App() {
       lenisRef.current = lenis;
       const loop = (t: number) => {
         lenis?.raf(t);
+        ScrollTrigger.update();
         raf = requestAnimationFrame(loop);
       };
       raf = requestAnimationFrame(loop);
@@ -186,7 +187,7 @@ export default function App() {
               trigger: cinema,
               start: `top+=${start * 100}% top`,
               end: `top+=${end * 100}% top`,
-              scrub: 0.2,
+              scrub: true,
             },
           }
         );
@@ -199,7 +200,7 @@ export default function App() {
           trigger: cinema,
           start: `top+=${end * 100}% top`,
           end: `top+=${end * 100 + 0.06 * 100}% top`,
-          scrub: 0.1,
+          scrub: true,
         },
       });
     });
@@ -410,14 +411,11 @@ export default function App() {
                 onClick={() => {
                   const el = menuSectionRef.current;
                   if (el) {
-                    if (chapter1Ref.current) gsap.to(chapter1Ref.current, { opacity: 0, duration: 0.3 });
-                    if (chapter2Ref.current) gsap.to(chapter2Ref.current, { opacity: 0, duration: 0.3 });
-                    if (chapter3Ref.current) gsap.to(chapter3Ref.current, { opacity: 0, duration: 0.3 });
                     lenisRef.current?.scrollTo(el, {
                       offset: 0,
                       duration: 2.5,
                       onComplete: () => {
-                        ScrollTrigger.refresh();
+                        ScrollTrigger.refresh(true);
                       },
                     });
                   }
