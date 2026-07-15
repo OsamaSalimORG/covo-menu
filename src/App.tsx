@@ -118,10 +118,11 @@ export default function App() {
     import("lenis").then(({ default: Lenis }) => {
       if (cancelled) return;
       lenis = new Lenis({
-        lerp: mobile ? 0.15 : 0.09,
-        wheelMultiplier: mobile ? 0.8 : 1,
+        lerp: mobile ? 0.08 : 0.06,
+        wheelMultiplier: mobile ? 0.5 : 0.7,
         smoothWheel: true,
-        touchMultiplier: 1.5,
+        touchMultiplier: 1.2,
+        duration: 1.8,
       });
       lenisRef.current = lenis;
       const loop = (t: number) => {
@@ -409,10 +410,10 @@ export default function App() {
                 onClick={() => {
                   const el = menuSectionRef.current;
                   if (el) {
-                    lenisRef.current?.scrollTo(el, { offset: 0 });
+                    lenisRef.current?.scrollTo(el, { offset: 0, duration: 2.5 });
                   }
                 }}
-                className="mt-4 px-6 py-2 rounded-full border border-gold/40 text-gold text-[11px] tracking-[0.25em] hover:bg-gold/10 hover:border-gold/70 transition pointer-events-auto"
+                className="mt-4 px-6 py-2 rounded-full border border-gold/40 text-gold text-[11px] tracking-[0.25em] hover:bg-gold/10 hover:border-gold/70 transition pointer-events-auto relative z-50"
                 style={{ textShadow: "0 0 12px rgba(212,168,67,0.6), 0 0 30px rgba(212,168,67,0.3)" }}
               >
                 {t.goToMenu}
