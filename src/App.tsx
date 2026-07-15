@@ -402,7 +402,7 @@ export default function App() {
             ref={chapter2Ref}
             className="absolute inset-x-0 bottom-24 flex flex-col items-center justify-end text-center px-6 will-change-[opacity,transform]"
           >
-            <div className="glass rounded-2xl px-8 py-6 max-w-xl">
+            <div className="rounded-2xl px-8 py-6 max-w-xl" style={{ backdropFilter: "blur(20px) saturate(120%)", background: "rgba(10,8,6,0.7)" }}>
               <p className="text-[10px] tracking-[0.5em] text-gold mb-3">— 01 —</p>
               <h2
                 className={`text-3xl md:text-5xl mb-3 ${isAr ? "font-arabic" : ""}`}
@@ -419,7 +419,7 @@ export default function App() {
             ref={chapter3Ref}
             className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center text-center px-6 will-change-[opacity,transform]"
           >
-            <div className="glass rounded-2xl px-8 py-6 max-w-xl">
+            <div className="rounded-2xl px-8 py-6 max-w-xl" style={{ backdropFilter: "blur(20px) saturate(120%)", background: "rgba(10,8,6,0.7)" }}>
               <p className="text-[10px] tracking-[0.5em] text-gold mb-3">— 02 —</p>
               <h2
                 className={`text-3xl md:text-5xl mb-3 ${isAr ? "font-arabic" : ""}`}
