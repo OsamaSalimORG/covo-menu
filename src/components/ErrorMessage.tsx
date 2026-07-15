@@ -11,7 +11,7 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
         <h2 className="text-xl text-foreground" style={{ fontFamily: "var(--font-display)", fontStyle: "italic" }}>
           Something went wrong
         </h2>
-        <p className="text-sm text-muted-foreground">{message}</p>
+        <p className="text-sm text-foreground/60">{message}</p>
         {onRetry && (
           <button
             onClick={onRetry}

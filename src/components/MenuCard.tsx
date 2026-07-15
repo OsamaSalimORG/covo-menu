@@ -37,10 +37,10 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
             className="w-full h-full object-cover opacity-50"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/50 md:from-transparent md:via-transparent md:to-[oklch(0.99_0.002_80)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/50 md:from-transparent md:via-transparent md:to-[oklch(0.14_0.012_60)]" />
         {!item.available && (
-          <div className="absolute inset-0 bg-black/40 grid place-items-center">
-            <span className="text-[10px] tracking-[0.3em] text-white/70 uppercase">Unavailable</span>
+          <div className="absolute inset-0 bg-black/60 grid place-items-center">
+            <span className="text-[10px] tracking-[0.3em] text-foreground/70 uppercase">Unavailable</span>
           </div>
         )}
         {item.popular && (
@@ -66,7 +66,7 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
             <div className="text-right whitespace-nowrap">
               {item.oldPrice && item.discount ? (
                 <div className="flex flex-col items-end">
-                  <span className="text-muted-foreground text-sm line-through font-mono">{item.oldPrice.toLocaleString()}</span>
+                  <span className="text-foreground/40 text-sm line-through font-mono">{item.oldPrice.toLocaleString()}</span>
                   <span className="text-gold text-lg font-mono">
                     {item.price.toLocaleString()}
                     <span className="text-[10px] tracking-[0.2em] ml-1 text-gold/70">{iqdLabel}</span>
@@ -80,11 +80,11 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
               )}
             </div>
           </div>
-          <p className={`text-sm text-muted-foreground leading-relaxed ${isAr ? "font-arabic" : ""}`}>{desc}</p>
+          <p className={`text-sm text-foreground/60 leading-relaxed ${isAr ? "font-arabic" : ""}`}>{desc}</p>
           {item.rating && (
             <div className="flex items-center gap-1 mt-2">
               <span className="text-gold text-sm">{item.rating}</span>
-              <span className="text-[10px] text-muted-foreground">/5</span>
+              <span className="text-[10px] text-foreground/40">/5</span>
             </div>
           )}
         </div>

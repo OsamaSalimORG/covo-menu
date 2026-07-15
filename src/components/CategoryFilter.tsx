@@ -20,7 +20,7 @@ export function CategoryFilter({ categories, active, onSelect, isAr }: CategoryF
             className={`text-[11px] tracking-[0.3em] px-5 py-2 rounded-full border transition ${
               isActive
                 ? "border-gold text-gold bg-gold/5"
-                : "border-black/10 text-muted-foreground hover:border-black/25 hover:text-foreground"
+                : "border-white/10 text-foreground/60 hover:border-white/25 hover:text-foreground"
             } ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}
           >
             {label}

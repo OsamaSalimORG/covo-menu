@@ -24,22 +24,22 @@ function LoadingScreen({ ready, progress }: { ready: boolean; progress: number }
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-700"
-      style={{ opacity: fading ? 0 : 1, backgroundColor: "var(--background)" }}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-noir transition-opacity duration-700"
+      style={{ opacity: fading ? 0 : 1 }}
     >
       <span
-        className="text-4xl md:text-5xl tracking-[0.25em] text-gold mb-6"
+        className="text-4xl md:text-5xl tracking-[0.25em] text-gold-glow mb-6"
         style={{ fontFamily: "var(--font-display)", fontStyle: "italic" }}
       >
         COVO
       </span>
-      <div className="w-40 h-[2px] bg-black/10 rounded-full overflow-hidden mb-4">
+      <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden mb-4">
         <div
           className="h-full bg-gold rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <span className="text-[11px] tracking-[0.3em] text-muted-foreground">{progress}%</span>
+      <span className="text-[11px] tracking-[0.3em] text-foreground/40">{progress}%</span>
     </div>
   );
 }
@@ -90,7 +90,7 @@ export default function App() {
 
   const frames = useFrameSequence();
 
-  // Smooth scroll via lenis
+  // Smooth scroll via lenis — lighter on mobile
   useEffect(() => {
     let raf = 0;
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
@@ -149,7 +149,7 @@ export default function App() {
   const { items, loading, error, categories } = useMenuData();
   const { search, setSearch, activeCategory, setActiveCategory, filtered } = useMenuFilter(items);
 
-  // Preload ALL frames + menu data
+  // Preload ALL frames + menu data — page stays hidden until everything is ready
   const [loadProgress, setLoadProgress] = useState(0);
   const [pageReady, setPageReady] = useState(false);
 
@@ -236,19 +236,18 @@ export default function App() {
       lang={isAr ? "ar" : "en"}
     >
       <LoadingScreen ready={pageReady && !loading} progress={loadProgress} />
-
       {/* Fixed floating navbar */}
       <header className="fixed top-4 inset-x-0 z-50 px-4 md:px-8">
         <div className="max-w-6xl mx-auto glass rounded-full px-5 md:px-8 py-3 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-2">
             <span
-              className={`text-2xl md:text-3xl tracking-[0.25em] text-gold ${isAr ? "font-arabic" : ""}`}
+              className={`text-2xl md:text-3xl tracking-[0.25em] text-gold-glow ${isAr ? "font-arabic" : ""}`}
               style={{ fontFamily: isAr ? undefined : "var(--font-display)" }}
             >
               COVO
             </span>
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.28em] text-foreground/60">
+          <nav className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.28em] text-foreground/70">
             {NAV.map((l) => (
               <a key={l.en} href={l.href} className="hover:text-foreground transition">
                 {isAr ? l.ar : l.en.toUpperCase()}
@@ -258,7 +257,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setLang(isAr ? "en" : "ar")}
-              className="text-[11px] tracking-[0.25em] px-3 py-1 rounded-full border border-black/15 hover:border-gold/60 hover:text-gold transition"
+              className="text-[11px] tracking-[0.25em] px-3 py-1 rounded-full border border-white/15 hover:border-gold/60 hover:text-gold transition"
             >
               {isAr ? "EN" : "ع"}
             </button>
@@ -300,7 +299,7 @@ export default function App() {
           >
             <p className="text-[11px] tracking-[0.5em] text-gold/80 mb-6">{t.tagline}</p>
             <h1
-              className={`text-6xl md:text-[9rem] leading-[0.9] text-gold ${isAr ? "font-arabic" : ""}`}
+              className={`text-6xl md:text-[9rem] leading-[0.9] text-gold-glow ${isAr ? "font-arabic" : ""}`}
               style={{ fontFamily: isAr ? undefined : "var(--font-display)", fontWeight: 400, letterSpacing: "0.02em" }}
             >
               {t.hero1}
@@ -415,7 +414,7 @@ export default function App() {
               {t.menuTitle}
             </h2>
             <div className="hairline max-w-xs mx-auto my-6" />
-            <p className={`text-muted-foreground max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>{t.menuSub}</p>
+            <p className={`text-foreground/60 max-w-xl mx-auto ${isAr ? "font-arabic" : ""}`}>{t.menuSub}</p>
           </div>
 
           <CategoryFilter
@@ -453,28 +452,28 @@ export default function App() {
             </div>
           )}
           {!loading && !error && filtered.length === 0 && items.length > 0 && (
-            <p className="text-center text-muted-foreground py-10 text-sm">No items found.</p>
+            <p className="text-center text-foreground/50 py-10 text-sm">No items found.</p>
           )}
           {!loading && !error && items.length === 0 && (
-            <p className="text-center text-muted-foreground py-10 text-sm">No menu items available.</p>
+            <p className="text-center text-foreground/50 py-10 text-sm">No menu items available.</p>
           )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="reserve" className="relative border-t border-black/5 bg-ink">
+      <footer id="reserve" className="relative border-t border-white/5 bg-ink">
         <div className="max-w-6xl mx-auto px-6 py-14 text-center">
           <div
-            className={`text-3xl tracking-[0.35em] text-gold mb-3 ${isAr ? "font-arabic" : ""}`}
+            className={`text-3xl tracking-[0.35em] text-gold-glow mb-3 ${isAr ? "font-arabic" : ""}`}
             style={{ fontFamily: isAr ? undefined : "var(--font-display)" }}
           >
             COVO
           </div>
-          <p className={`text-[11px] tracking-[0.35em] text-muted-foreground ${isAr ? "font-arabic tracking-normal" : ""}`}>
+          <p className={`text-[11px] tracking-[0.35em] text-foreground/50 ${isAr ? "font-arabic tracking-normal" : ""}`}>
             {t.footerLine}
           </p>
           <div className="hairline max-w-xs mx-auto my-6" />
-          <p className="text-[10px] tracking-[0.3em] text-muted-foreground/60 font-mono">
+          <p className="text-[10px] tracking-[0.3em] text-foreground/30 font-mono">
             © {new Date().getFullYear()} COVO · ALL RIGHTS RESERVED
           </p>
         </div>
@@ -483,7 +482,7 @@ export default function App() {
       {/* Floating cart */}
       <button
         onClick={() => setCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full glass-strong text-gold grid place-items-center hover:scale-105 transition float-slow shadow-lg"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full glass-strong text-gold grid place-items-center hover:scale-105 transition float-slow"
         aria-label="Open order"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -501,9 +500,9 @@ export default function App() {
       {/* Cart drawer */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setCartOpen(false)}>
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <aside
-            className="drawer-in relative w-full max-w-md bg-white border-l border-black/10 h-full shadow-2xl p-6 overflow-y-auto"
+            className="drawer-in relative w-full max-w-md bg-ink border-l border-white/10 h-full shadow-2xl p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
@@ -513,11 +512,11 @@ export default function App() {
               >
                 {t.yourCart}
               </h3>
-              <button onClick={() => setCartOpen(false)} className="text-muted-foreground hover:text-gold">✕</button>
+              <button onClick={() => setCartOpen(false)} className="text-foreground/50 hover:text-gold">✕</button>
             </div>
             <div className="space-y-4">
               {Object.keys(cart).length === 0 && (
-                <p className="text-muted-foreground text-sm text-center py-10">{t.empty}</p>
+                <p className="text-foreground/50 text-sm text-center py-10">{t.empty}</p>
               )}
               {items.filter((it) => cart[it.id]).map((it) => {
                 const name = isAr && it.nameAr ? it.nameAr : it.name;
@@ -529,9 +528,9 @@ export default function App() {
                       <p className="text-xs text-gold font-mono">{(it.price * cart[it.id]).toLocaleString()} {t.iqd}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => remove(it.id)} className="w-7 h-7 rounded-full border border-black/15 hover:border-gold hover:text-gold">−</button>
+                      <button onClick={() => remove(it.id)} className="w-7 h-7 rounded-full border border-white/15 hover:border-gold hover:text-gold">−</button>
                       <span className="w-5 text-center text-sm">{cart[it.id]}</span>
-                      <button onClick={() => add(it.id)} className="w-7 h-7 rounded-full border border-black/15 hover:border-gold hover:text-gold">+</button>
+                      <button onClick={() => add(it.id)} className="w-7 h-7 rounded-full border border-white/15 hover:border-gold hover:text-gold">+</button>
                     </div>
                   </div>
                 );
@@ -541,7 +540,7 @@ export default function App() {
               <div className="mt-8 space-y-4">
                 <div className="hairline" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs tracking-[0.3em] text-muted-foreground">{t.total.toUpperCase()}</span>
+                  <span className="text-xs tracking-[0.3em] text-foreground/60">{t.total.toUpperCase()}</span>
                   <span className="text-2xl text-gold font-mono">{subtotal.toLocaleString()} {t.iqd}</span>
                 </div>
                 <button className={`w-full rounded-full bg-gold text-primary-foreground py-3.5 text-[11px] tracking-[0.35em] hover:bg-gold-soft transition ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}>
