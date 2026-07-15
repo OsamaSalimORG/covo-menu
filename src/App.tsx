@@ -8,7 +8,7 @@ import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Sparticles } from "@/components/Sparticles";
 
-function LoadingScreen({ ready }: { ready: boolean }) {
+function LoadingScreen({ ready, progress }: { ready: boolean; progress: number }) {
   const [show, setShow] = useState(true);
   const [fading, setFading] = useState(false);
 
@@ -33,14 +33,13 @@ function LoadingScreen({ ready }: { ready: boolean }) {
       >
         COVO
       </span>
-      <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden">
+      <div className="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden mb-4">
         <div
-          className="h-full bg-gold rounded-full"
-          style={{
-            animation: ready ? "none" : "loadingBar 1.8s ease-in-out infinite",
-          }}
+          className="h-full bg-gold rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
         />
       </div>
+      <span className="text-[11px] tracking-[0.3em] text-foreground/40">{progress}%</span>
     </div>
   );
 }
@@ -150,14 +149,29 @@ export default function App() {
   const { items, loading, error, categories } = useMenuData();
   const { search, setSearch, activeCategory, setActiveCategory, filtered } = useMenuFilter(items);
 
-  // Track first frame loaded for loading screen
-  const [framesReady, setFramesReady] = useState(false);
+  // Preload ALL frames + menu data — page stays hidden until everything is ready
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [pageReady, setPageReady] = useState(false);
+
   useEffect(() => {
-    const img = new Image();
-    img.src = `${import.meta.env.BASE_URL}frames/frame-001.jpg`;
-    img.onload = () => setFramesReady(true);
+    const base = import.meta.env.BASE_URL;
+    const total = 86;
+    let loaded = 0;
+
+    const promises = Array.from({ length: total }, (_, i) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = img.onerror = () => {
+          loaded++;
+          setLoadProgress(Math.round((loaded / total) * 100));
+          resolve();
+        };
+        img.src = `${base}frames/frame-${String(i + 1).padStart(3, "0")}.jpg`;
+      });
+    });
+
+    Promise.all(promises).then(() => setPageReady(true));
   }, []);
-  const pageReady = framesReady && !loading;
 
   // Cart
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -217,7 +231,7 @@ export default function App() {
       dir={isAr ? "rtl" : "ltr"}
       lang={isAr ? "ar" : "en"}
     >
-      <LoadingScreen ready={pageReady} />
+      <LoadingScreen ready={pageReady && !loading} progress={loadProgress} />
       {/* Fixed floating navbar */}
       <header className="fixed top-4 inset-x-0 z-50 px-4 md:px-8">
         <div className="max-w-6xl mx-auto glass rounded-full px-5 md:px-8 py-3 flex items-center justify-between">
