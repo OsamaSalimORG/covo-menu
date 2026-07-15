@@ -3,8 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 const FRAME_COUNT = 86;
 
 function getFrameUrls(): string[] {
+  const base = import.meta.env.BASE_URL;
   return Array.from({ length: FRAME_COUNT }, (_, i) =>
-    `/frames/frame-${String(i + 1).padStart(3, "0")}.jpg`
+    `${base}frames/frame-${String(i + 1).padStart(3, "0")}.jpg`
   );
 }
 
