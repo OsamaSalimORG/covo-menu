@@ -1,15 +1,16 @@
 import type { MenuItem } from "@/types/menu";
-import { handleImageError, getPlaceholderImage } from "@/services/google-drive";
+import { handleImageError, getPlaceholderImage, getDriveThumbnailUrl } from "@/services/google-drive";
 
 interface MenuCardProps {
   item: MenuItem;
   isAr: boolean;
   onAddToCart: (id: string) => void;
+  onImageClick: (item: MenuItem) => void;
   iqdLabel: string;
   addToCartLabel: string;
 }
 
-export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: MenuCardProps) {
+export function MenuCard({ item, isAr, onAddToCart, onImageClick, iqdLabel, addToCartLabel }: MenuCardProps) {
   const name = isAr && item.nameAr ? item.nameAr : item.name;
   const desc = isAr && item.descriptionAr ? item.descriptionAr : item.description;
 
@@ -18,15 +19,27 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
       data-reveal
       className="relative glass rounded-3xl overflow-hidden flex flex-col md:flex-row hover:border-gold/40 transition-colors"
     >
-      <div className="relative md:w-44 h-56 md:h-auto shrink-0 overflow-hidden">
-        {item.imageUrl ? (
+      <div
+        className="relative md:w-44 h-56 md:h-auto shrink-0 overflow-hidden cursor-pointer group"
+        onClick={() => onImageClick(item)}
+      >
+        {item.imageFileId ? (
+          <img
+            src={getDriveThumbnailUrl(item.imageFileId, 400)}
+            alt={name}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => handleImageError(e, item.imageFileId)}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : item.imageUrl ? (
           <img
             src={item.imageUrl}
             alt={name}
             loading="lazy"
             decoding="async"
             onError={(e) => handleImageError(e, item.imageFileId)}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
           <img
@@ -38,6 +51,16 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/50 md:from-transparent md:via-transparent md:to-[oklch(0.14_0.012_60)]" />
+        {/* Tap-to-expand hint */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="bg-black/50 backdrop-blur-sm rounded-full p-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gold">
+              <path d="M15 3h6v6" />
+              <path d="M10 14 21 3" />
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            </svg>
+          </div>
+        </div>
         {!item.available && (
           <div className="absolute inset-0 bg-black/60 grid place-items-center">
             <span className="text-[10px] tracking-[0.3em] text-foreground/70 uppercase">Unavailable</span>
@@ -88,13 +111,24 @@ export function MenuCard({ item, isAr, onAddToCart, iqdLabel, addToCartLabel }: 
             </div>
           )}
         </div>
-        <button
-          onClick={() => item.available && onAddToCart(item.id)}
-          disabled={!item.available}
-          className={`mt-5 self-start rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-primary-foreground px-6 py-2.5 text-[11px] tracking-[0.3em] transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gold ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}
-        >
-          + {addToCartLabel}
-        </button>
+        <div className="flex items-center gap-3 mt-5">
+          <button
+            onClick={() => item.available && onAddToCart(item.id)}
+            disabled={!item.available}
+            className={`rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-primary-foreground px-6 py-2.5 text-[11px] tracking-[0.3em] transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-gold ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}
+          >
+            + {addToCartLabel}
+          </button>
+          <button
+            onClick={() => onImageClick(item)}
+            className="rounded-full border border-white/15 text-foreground/50 hover:text-gold hover:border-gold/40 px-4 py-2.5 text-[11px] tracking-[0.3em] transition"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </button>
+        </div>
       </div>
     </article>
   );

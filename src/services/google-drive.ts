@@ -5,6 +5,11 @@ export function getDriveImageUrl(fileId: string): string {
   return config.googleDrive.imageUrlFormat.replace("{FILE_ID}", fileId);
 }
 
+export function getDriveThumbnailUrl(fileId: string, width = 400): string {
+  if (!fileId) return "";
+  return `${config.googleDrive.imageUrlFormat.replace("{FILE_ID}", fileId)}&sz=w${width}`;
+}
+
 export function getDriveImageFallbackUrl(fileId: string): string {
   if (!fileId) return "";
   return config.googleDrive.fallbackFormat.replace("{FILE_ID}", fileId);

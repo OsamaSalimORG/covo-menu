@@ -6,9 +6,11 @@ import { useMenuData, useMenuFilter } from "@/hooks/use-menu";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { MenuCard } from "@/components/MenuCard";
+import { MenuLightbox } from "@/components/MenuLightbox";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Sparticles } from "@/components/Sparticles";
+import type { MenuItem } from "@/types/menu";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -288,6 +290,7 @@ export default function App() {
   // Cart
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
+  const [lightboxItem, setLightboxItem] = useState<MenuItem | null>(null);
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = items.reduce((sum, it) => sum + (cart[it.id] || 0) * it.price, 0);
   const add = useCallback((id: string) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })), []);
@@ -526,6 +529,7 @@ export default function App() {
                   item={it}
                   isAr={isAr}
                   onAddToCart={add}
+                  onImageClick={setLightboxItem}
                   iqdLabel={t.iqd}
                   addToCartLabel={t.addToCart}
                 />
@@ -631,6 +635,17 @@ export default function App() {
             )}
           </aside>
         </div>
+      )}
+
+      {lightboxItem && (
+        <MenuLightbox
+          item={lightboxItem}
+          isAr={isAr}
+          onClose={() => setLightboxItem(null)}
+          onAddToCart={add}
+          iqdLabel={t.iqd}
+          addToCartLabel={t.addToCart}
+        />
       )}
     </div>
   );
