@@ -60,7 +60,7 @@ export default function App() {
   const isAr = lang === "ar";
   const t = {
     tagline: isAr ? "مطعم كوفو · تجربة سينمائية فاخرة" : "Restaurant & Lounge",
-    hero1: isAr ? "ادخل" : "STEP",
+    hero1: isAr ? "خطوة" : "STEP",
     hero2: isAr ? "إلى الداخل" : "INSIDE",
     scrollHint: isAr ? "مرّر للدخول" : "SCROLL TO ENTER",
     goToMenu: isAr ? "عرض القائمة" : "Go to Menu",
