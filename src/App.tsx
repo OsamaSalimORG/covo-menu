@@ -87,6 +87,10 @@ export default function App() {
     empty: isAr ? "طلبك فارغ." : "Your order is empty.",
     total: isAr ? "الإجمالي" : "Total",
     checkout: isAr ? "إتمام الطلب" : "Reserve & Order",
+    nameField: isAr ? "الاسم" : "Name",
+    phoneField: isAr ? "رقم الهاتف" : "Phone Number",
+    addressField: isAr ? "العنوان" : "Address",
+    requiredField: isAr ? "هذا الحقل مطلوب" : "This field is required",
     iqd: isAr ? "د.ع" : "IQD",
     loading: isAr ? "…جاري التحميل" : "Loading menu…",
     catAll: isAr ? "الكل" : "All",
@@ -292,6 +296,10 @@ export default function App() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [lightboxItem, setLightboxItem] = useState<MenuItem | null>(null);
+  const [custName, setCustName] = useState("");
+  const [custPhone, setCustPhone] = useState("");
+  const [custAddress, setCustAddress] = useState("");
+  const [formErrors, setFormErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = items.reduce((sum, it) => sum + (cart[it.id] || 0) * it.price, 0);
   const add = useCallback((id: string) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })), []);
@@ -305,7 +313,43 @@ export default function App() {
     []
   );
 
-  // Refresh ScrollTrigger when menu items load
+  const sendOrderWhatsApp = useCallback(() => {
+    const errors: { name?: boolean; phone?: boolean; address?: boolean } = {};
+    if (!custName.trim()) errors.name = true;
+    if (!custPhone.trim()) errors.phone = true;
+    if (!custAddress.trim()) errors.address = true;
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    setFormErrors({});
+
+    const orderLines = items
+      .filter((it) => cart[it.id])
+      .map((it) => {
+        const name = isAr && it.nameAr ? it.nameAr : it.name;
+        return `• ${name} x${cart[it.id]} — ${(it.price * cart[it.id]).toLocaleString()} IQD`;
+      });
+
+    const totalAmount = subtotal.toLocaleString();
+    const msg = [
+      `🍽 *COVO Order*`,
+      ``,
+      `👤 *${custName}*`,
+      `📞 ${custPhone}`,
+      `📍 ${custAddress}`,
+      ``,
+      `---`,
+      ...orderLines,
+      ``,
+      `---`,
+      `💰 *Total: ${totalAmount} IQD*`,
+    ].join("\n");
+
+    const phone = "9647729204005";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+  }, [cart, items, custName, custPhone, custAddress, subtotal, isAr]);
   useEffect(() => {
     if (filtered.length > 0) {
       requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -640,7 +684,42 @@ export default function App() {
                   <span className="text-xs tracking-[0.3em] text-foreground/60">{t.total.toUpperCase()}</span>
                   <span className="text-2xl text-gold font-mono">{subtotal.toLocaleString()} {t.iqd}</span>
                 </div>
-                <button className={`w-full rounded-full bg-gold text-primary-foreground py-3.5 text-[11px] tracking-[0.35em] hover:bg-gold-soft transition ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}>
+                <div className="space-y-3 pt-2">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder={t.nameField}
+                      value={custName}
+                      onChange={(e) => { setCustName(e.target.value); setFormErrors((p) => ({ ...p, name: false })); }}
+                      className={`w-full bg-white/5 border ${formErrors.name ? "border-red-500" : "border-white/10"} rounded-xl px-4 py-3 text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-gold/50 transition`}
+                    />
+                    {formErrors.name && <p className="text-red-400 text-[10px] mt-1">{t.requiredField}</p>}
+                  </div>
+                  <div>
+                    <input
+                      type="tel"
+                      placeholder={t.phoneField}
+                      value={custPhone}
+                      onChange={(e) => { setCustPhone(e.target.value); setFormErrors((p) => ({ ...p, phone: false })); }}
+                      className={`w-full bg-white/5 border ${formErrors.phone ? "border-red-500" : "border-white/10"} rounded-xl px-4 py-3 text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-gold/50 transition`}
+                    />
+                    {formErrors.phone && <p className="text-red-400 text-[10px] mt-1">{t.requiredField}</p>}
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder={t.addressField}
+                      value={custAddress}
+                      onChange={(e) => { setCustAddress(e.target.value); setFormErrors((p) => ({ ...p, address: false })); }}
+                      className={`w-full bg-white/5 border ${formErrors.address ? "border-red-500" : "border-white/10"} rounded-xl px-4 py-3 text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-gold/50 transition`}
+                    />
+                    {formErrors.address && <p className="text-red-400 text-[10px] mt-1">{t.requiredField}</p>}
+                  </div>
+                </div>
+                <button
+                  onClick={sendOrderWhatsApp}
+                  className={`w-full rounded-full bg-gold text-primary-foreground py-3.5 text-[11px] tracking-[0.35em] hover:bg-gold-soft transition ${isAr ? "font-arabic tracking-normal" : "uppercase"}`}
+                >
                   {t.checkout}
                 </button>
               </div>
