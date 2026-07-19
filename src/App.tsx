@@ -90,6 +90,7 @@ export default function App() {
     nameField: isAr ? "الاسم" : "Name",
     phoneField: isAr ? "رقم الهاتف" : "Phone Number",
     addressField: isAr ? "العنوان" : "Address",
+    pickupTimeField: isAr ? "وقت الاستلام" : "Pickup Time",
     requiredField: isAr ? "هذا الحقل مطلوب" : "This field is required",
     iqd: isAr ? "د.ع" : "IQD",
     loading: isAr ? "…جاري التحميل" : "Loading menu…",
@@ -299,7 +300,8 @@ export default function App() {
   const [custName, setCustName] = useState("");
   const [custPhone, setCustPhone] = useState("");
   const [custAddress, setCustAddress] = useState("");
-  const [formErrors, setFormErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean }>({});
+  const [custPickupTime, setCustPickupTime] = useState("");
+  const [formErrors, setFormErrors] = useState<{ name?: boolean; phone?: boolean; address?: boolean; pickupTime?: boolean }>({});
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
   const subtotal = items.reduce((sum, it) => sum + (cart[it.id] || 0) * it.price, 0);
   const add = useCallback((id: string) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 })), []);
@@ -314,10 +316,11 @@ export default function App() {
   );
 
   const sendOrderWhatsApp = useCallback(() => {
-    const errors: { name?: boolean; phone?: boolean; address?: boolean } = {};
+    const errors: { name?: boolean; phone?: boolean; address?: boolean; pickupTime?: boolean } = {};
     if (!custName.trim()) errors.name = true;
     if (!custPhone.trim()) errors.phone = true;
     if (!custAddress.trim()) errors.address = true;
+    if (!custPickupTime.trim()) errors.pickupTime = true;
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
@@ -338,6 +341,7 @@ export default function App() {
       `👤 *${custName}*`,
       `📞 ${custPhone}`,
       `📍 ${custAddress}`,
+      `🕐 *${custPickupTime}*`,
       ``,
       `---`,
       ...orderLines,
@@ -349,7 +353,7 @@ export default function App() {
     const phone = "9647729204005";
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");
-  }, [cart, items, custName, custPhone, custAddress, subtotal, isAr]);
+  }, [cart, items, custName, custPhone, custAddress, custPickupTime, subtotal, isAr]);
   useEffect(() => {
     if (filtered.length > 0) {
       requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -714,6 +718,16 @@ export default function App() {
                       className={`w-full bg-white/5 border ${formErrors.address ? "border-red-500" : "border-white/10"} rounded-xl px-4 py-3 text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-gold/50 transition`}
                     />
                     {formErrors.address && <p className="text-red-400 text-[10px] mt-1">{t.requiredField}</p>}
+                  </div>
+                  <div>
+                    <input
+                      type="time"
+                      value={custPickupTime}
+                      onChange={(e) => { setCustPickupTime(e.target.value); setFormErrors((p) => ({ ...p, pickupTime: false })); }}
+                      className={`w-full bg-white/5 border ${formErrors.pickupTime ? "border-red-500" : "border-white/10"} rounded-xl px-4 py-3 text-sm text-foreground placeholder-foreground/30 focus:outline-none focus:border-gold/50 transition ${isAr ? "direction-rtl" : ""}`}
+                    />
+                    {!custPickupTime && <p className="text-foreground/30 text-[10px] mt-1">{t.pickupTimeField}</p>}
+                    {formErrors.pickupTime && <p className="text-red-400 text-[10px] mt-1">{t.requiredField}</p>}
                   </div>
                 </div>
                 <button
