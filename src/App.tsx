@@ -10,6 +10,7 @@ import { MenuLightbox } from "@/components/MenuLightbox";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Sparticles } from "@/components/Sparticles";
+import { getDriveThumbnailUrl, getDriveImageFallbackUrl, getPlaceholderImage, handleImageError } from "@/services/google-drive";
 import type { MenuItem } from "@/types/menu";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -607,7 +608,18 @@ export default function App() {
                 const name = isAr && it.nameAr ? it.nameAr : it.name;
                 return (
                   <div key={it.id} className="flex items-center gap-3 glass rounded-xl p-3">
-                    {it.imageUrl && <img src={it.imageUrl} alt="" className="w-14 h-14 rounded-lg object-cover" />}
+                    {it.imageFileId ? (
+                      <img
+                        src={getDriveThumbnailUrl(it.imageFileId, 200)}
+                        alt=""
+                        className="w-14 h-14 rounded-lg object-cover"
+                        onError={(e) => handleImageError(e, it.imageFileId)}
+                      />
+                    ) : it.imageUrl ? (
+                      <img src={it.imageUrl} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                    ) : (
+                      <img src={getPlaceholderImage()} alt="" className="w-14 h-14 rounded-lg object-cover opacity-50" />
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className={`truncate ${isAr ? "font-arabic" : ""}`}>{name}</p>
                       <p className="text-xs text-gold font-mono">{(it.price * cart[it.id]).toLocaleString()} {t.iqd}</p>
